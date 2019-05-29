@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutNoteColor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/layoutNoteColor"
-    android:padding="8dp"
     tools:context=".NoteActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
         android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/spinnerColor"
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:gravity="center|left"
+            android:padding="12dp"
+            android:text="Not Oluştur"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/editTitle"
@@ -28,31 +43,55 @@
             tools:layout_editor_absoluteX="45dp"
             tools:layout_editor_absoluteY="16dp" />
 
+        <Spinner
+            android:id="@+id/spinnerColor"
+            android:layout_marginLeft="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 
     <EditText
         android:id="@+id/editNote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:layout_weight="1"
         android:ems="10"
         android:gravity="top"
         android:hint="Note..."
-        android:inputType="textPersonName" />
-
-    <TextView
-        android:id="@+id/textFile"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:onClick="openFile"
-        android:text="Dosya eklenmedi"
-        android:textAllCaps="false"
-        android:textColor="@color/Black"
-        android:textStyle="bold|italic" />
+        android:inputType="textMultiLine" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonAlarm"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@mipmap/alarm"
+            android:onClick="setAlarm"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/textAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Alarm eklenmedi"
+            android:textAllCaps="false"
+            android:textColor="@color/Black"
+            android:textSize="18sp"
+            android:textStyle="bold|italic" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
         android:orientation="horizontal">
 
         <Button
@@ -63,6 +102,24 @@
             android:onClick="attach"
             android:scaleType="fitCenter" />
 
+        <TextView
+            android:id="@+id/textFile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:onClick="openFile"
+            android:text="Dosya eklenmedi"
+            android:textAllCaps="false"
+            android:textColor="@color/Black"
+            android:textSize="18sp"
+            android:textStyle="bold|italic" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <Button
             android:id="@+id/buttonDelete"
             android:layout_width="wrap_content"
@@ -71,15 +128,19 @@
             android:layout_marginRight="12dp"
             android:layout_weight="1"
             android:onClick="delete"
-            android:text="SİL" />
+            android:text="SİL"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/buttonSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="save"
             android:layout_weight="1"
-            android:text="KAYDET" />
+            android:onClick="save"
+            android:text="KAYDET"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

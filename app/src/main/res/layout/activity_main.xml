@@ -3,22 +3,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="right"
+    android:orientation="vertical"
     tools:context=".MainActivity">
+
+    <LinearLayout
+        android:padding="8dp"
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColorHint="#BCFFFFFF"
+            android:ems="10"
+            android:hint="Not ara..."
+            android:inputType="textPersonName"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="12dp"
+            android:background="@mipmap/search" />
+
+        <TextView
+            android:id="@+id/textAdd"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:onClick="addNote"
+            android:layout_marginLeft="12dp"
+            android:background="@mipmap/add" />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <ImageButton
-        android:id="@+id/buttonAdd"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:onClick="addNote"
-        android:scaleType="fitCenter"
-        android:src="@mipmap/add" />
+        android:layout_weight="1" />
 
 </LinearLayout>

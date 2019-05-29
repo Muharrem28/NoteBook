@@ -1,6 +1,6 @@
 package com.muharrem.notebook;
 
-import android.content.ActivityNotFoundException;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,9 +10,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -30,11 +31,12 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private Note note;
     private Spinner spinner;
-    private EditText editTitle;
-    private EditText editNote;
-    private TextView textFile;
+    private EditText editTitle, editNote;
+    private TextView textFile, textAlarm;
     private LinearLayout layoutNoteColor;
     private DataAccessObject dao;
+    private DatePickerDialog.OnDateSetListener dateSetListener;
+    private Calendar alarmCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +48,9 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
         if (b != null)
             noteId = b.getInt("noteId", -1);
         if (noteId == -1) {
-            note = new Note(MyUtils.generateId());
+            note = new Note(AppUtils.generateId());
         } else {
-            note = MyUtils.findNoteById(noteId);
+            note = AppUtils.findNoteById(noteId);
         }
         dao = DataAccessObject.getInstance();
 
@@ -56,30 +58,44 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
         editNote = findViewById(R.id.editNote);
         spinner = findViewById(R.id.spinnerColor);
         textFile = findViewById(R.id.textFile);
+        textAlarm = findViewById(R.id.textAlarm);
         layoutNoteColor = findViewById(R.id.layoutNoteColor);
 
         editTitle.setText(note.getTitle());
         editNote.setText(note.getNote());
-        if(note.getFileName() != null) {
+        if (note.getFileName() != null) {
             Log.d("+++++", note.getFileName());
             textFile.setText(note.getFileName());
         }
 
         spinner.setOnItemSelectedListener(this);
         List<String> colorList = new ArrayList<>();
-        for (String d : MyUtils.descrp)
+        for (String d : AppUtils.descrp)
             colorList.add(d);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, colorList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
 
-        spinner.setSelection(MyUtils.posFromColor(note.getColorStr()));
+        spinner.setSelection(AppUtils.posFromColor(note.getColorStr()));
+
+        alarmCalendar = Calendar.getInstance();
+        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                alarmCalendar.set(Calendar.YEAR, year);
+                alarmCalendar.set(Calendar.MONTH, monthOfYear);
+                alarmCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                textAlarm.setText(new SimpleDateFormat("dd MMM HH:mm").format(alarmCalendar.getTime()));
+                AppUtils.addAlarm(note, alarmCalendar);
+            }
+
+        };
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = parent.getItemAtPosition(position).toString();
-        String colorStr = MyUtils.colorFromDes(item);
+        String colorStr = AppUtils.colorFromDes(item);
         spinner.setBackgroundColor(Color.parseColor(colorStr));
         layoutNoteColor.setBackgroundColor(Color.parseColor(colorStr));
     }
@@ -94,7 +110,7 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void save(View view) {
         String item = (String) spinner.getSelectedItem();
-        String colorStr = MyUtils.colorFromDes(item);
+        String colorStr = AppUtils.colorFromDes(item);
         note.setColorStr(colorStr);
         note.setTitle(editTitle.getText().toString());
         note.setNote(editNote.getText().toString());
@@ -104,7 +120,7 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void delete(View view) {
-        MyUtils.allNotes.remove(note);
+        AppUtils.allNotes.remove(note);
         dao.saveAll();
         onBackPressed();
     }
@@ -162,17 +178,19 @@ public class NoteActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void openFile(View view) {
-        MimeTypeMap myMime = MimeTypeMap.getSingleton();
-        Intent newIntent = new Intent(Intent.ACTION_VIEW);
-        String fileName = note.getFileName();
-        String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-        String mimeType = myMime.getMimeTypeFromExtension(extension);
-        newIntent.setDataAndType(Uri.fromFile(new File(note.getFilePath())), mimeType);
-        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        try {
-            startActivity(newIntent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "Bu uzantıyı açacak program bulunamadı.", Toast.LENGTH_LONG).show();
-        }
+        File file = new File(note.getFilePath());
+        AppUtils.openFile(this, file);
+    }
+
+    public void setAlarm(View view) {
+        new DatePickerDialog(this, dateSetListener, alarmCalendar
+                .get(Calendar.YEAR), alarmCalendar.get(Calendar.MONTH),
+                alarmCalendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AppUtils.saveAlarms(this);
     }
 }

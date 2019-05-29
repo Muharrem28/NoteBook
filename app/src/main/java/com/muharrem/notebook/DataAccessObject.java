@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DataAccessObject {
@@ -23,9 +22,9 @@ public class DataAccessObject {
 
     public void saveAll() {
         try {
-            FileOutputStream fos = MyUtils.appContext.openFileOutput("Notes.db", Context.MODE_PRIVATE);
+            FileOutputStream fos = AppUtils.appContext.openFileOutput("Notes.db", Context.MODE_PRIVATE);
             ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(MyUtils.allNotes);
+            os.writeObject(AppUtils.allNotes);
             os.close();
             fos.close();
         } catch (IOException e) {
@@ -36,7 +35,7 @@ public class DataAccessObject {
     public List<Note> getNotes() {
         List<Note> notes = null;
         try {
-            FileInputStream fis = MyUtils.appContext.openFileInput("Notes.db");
+            FileInputStream fis = AppUtils.appContext.openFileInput("Notes.db");
             ObjectInputStream is = new ObjectInputStream(fis);
             notes = (List<Note>) is.readObject();
             is.close();
@@ -45,7 +44,7 @@ public class DataAccessObject {
             e.printStackTrace();
         }
         if(notes == null)
-            notes = MyUtils.randomNotes(12);
+            notes = AppUtils.randomNotes();
         return notes;
     }
 }

@@ -25,7 +25,7 @@ public class Note implements Serializable, Comparable<Note> {
         note = "";
         date = Calendar.getInstance();
         address = "";
-        colorStr = MyUtils.colors[0];
+        colorStr = AppUtils.colors[0];
         priority = 3;
     }
 
